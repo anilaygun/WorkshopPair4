@@ -1,11 +1,14 @@
 package com.etiya.academy.service;
 
+import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Product;
+import com.etiya.academy.mapper.ProductMapper;
 import com.etiya.academy.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -13,30 +16,39 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     @Override
-    public List<Product> getAll() {
-        return productRepository.getAll();
-    }
-
-    @Override
-    public void add(Product product) {
+    public List<ListProductResponseDto> getAll() {
         List<Product> products = productRepository.getAll();
-        boolean exists = products.stream().anyMatch(p -> p.getId() == product.getId());
-
-        if (exists) {
-            throw new RuntimeException("ID'si " + product.getId() + " olan ürün listede var.");
-        } else {
-            productRepository.add(product);
-        }
+        List<ListProductResponseDto> listProductResponseDtos = ProductMapper.INSTANCE.listResponseDtoFromProduct(products);
+        return listProductResponseDtos;
     }
 
     @Override
-    public Product getById(int id) {
-        return productRepository.getById(id);
+    public CreateProductResponseDto add(CreateProductRequestDto createProductRequest) {
+
+        Random random = new Random();
+        Product product = ProductMapper.INSTANCE.productFromCreateRequestDto(createProductRequest);
+        product.setId(random.nextInt(1, 99999));
+        productRepository.add(product);
+        CreateProductResponseDto createProductResponseDto = ProductMapper.INSTANCE.createProductResponseDtoFromProduct(product);
+        return createProductResponseDto;
+    }
+
+
+    @Override
+    public GetProductByIdResponseDto getById(int id) {
+        GetProductByIdResponseDto getResponse = ProductMapper.INSTANCE.getProductResponseDtoFromProduct(productRepository.getById(id));
+        return getResponse;
     }
 
     @Override
-    public void update(Product product) {
-        productRepository.update(product);
+    public UpdateProductResponseDto update(UpdateProductRequestDto updateProductRequestDto) {
+        Product product = ProductMapper.INSTANCE.productFromUpdateRequestDto(updateProductRequestDto);
+        Product updatedProduct = productRepository.update(product);
+
+        UpdateProductResponseDto productResponseDto = ProductMapper.INSTANCE.updateResponseDtoFromProduct(updatedProduct);
+        return productResponseDto;
+
+
     }
 
     @Override

@@ -1,18 +1,19 @@
 package com.etiya.academy.service;
 
+import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Product;
 
 import java.util.List;
 
 public interface ProductService {
     // TODO: DTO!
-    List<Product> getAll();
+    List<ListProductResponseDto> getAll();
 
-    void add(Product product);
+    CreateProductResponseDto add(CreateProductRequestDto createProductRequest);
 
-    Product getById(int id);
+    GetProductByIdResponseDto getById(int id);
 
-    void update(Product product);
+    UpdateProductResponseDto update(UpdateProductRequestDto updateProductRequestDto);
 
     void delete(int id);
 

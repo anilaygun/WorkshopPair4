@@ -1,8 +1,9 @@
+
 package com.etiya.academy.controller;
 
+import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Product;
 import com.etiya.academy.service.ProductService;
-import com.etiya.academy.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,50 +19,49 @@ public class ProductsController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping()
-    public List<Product> getAll() {
+    public List<ListProductResponseDto> getAll() {
 
         return productService.getAll();
     }
 
     @PostMapping()
-    public ResponseEntity<Product> add(@RequestBody Product product) {
-        if (product != null) {
-            productService.add(product);
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<CreateProductResponseDto> add(@RequestBody CreateProductRequestDto createProductRequest) {
+        if (createProductRequest != null) {
+            CreateProductResponseDto createProductResponseDto = productService.add(createProductRequest);
+            return new ResponseEntity<CreateProductResponseDto>(createProductResponseDto, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+        return new ResponseEntity<CreateProductResponseDto>(HttpStatus.NOT_FOUND);
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getById(@PathVariable int id) {
-        Product product = productService.getById(id);
+    public ResponseEntity<GetProductByIdResponseDto> getById(@PathVariable int id) {
+        GetProductByIdResponseDto productByIdResponseDto = productService.getById(id);
 
-        if (product != null) {
-            return new ResponseEntity<>(product, HttpStatus.OK);
+        if (productByIdResponseDto != null) {
+            return new ResponseEntity<GetProductByIdResponseDto>(productByIdResponseDto, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<GetProductByIdResponseDto>(productByIdResponseDto, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping()
-    public ResponseEntity<Product> update(@RequestBody Product product) {
-        if (product != null) {
-            productService.update(product);
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<UpdateProductResponseDto> update(@RequestBody UpdateProductRequestDto updateProductRequestDto) {
+        UpdateProductResponseDto productResponseDto = productService.update(updateProductRequestDto);
+        if (updateProductRequestDto != null) {
+            return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(productResponseDto, HttpStatus.NOT_FOUND);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> delete(@PathVariable int id) {
-        Product product = productService.getById(id);
-        if (product != null) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+        GetProductByIdResponseDto deletedProduct = productService.getById(id);
+        if (deletedProduct != null) {
             productService.delete(id);
-            return new ResponseEntity<>(product, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(product, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 

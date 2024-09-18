@@ -16,8 +16,9 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public void add(Product product) {
+    public Product add(Product product) {
         products.add(product);
+        return product;
     }
 
     @Override
@@ -29,13 +30,15 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public void update(Product product) {
+    public Product update(Product product) {
         Product productToUpdate = getById(product.getId());
         if (productToUpdate != null) {
             productToUpdate.setName(product.getName());
             productToUpdate.setUnitPrice(product.getUnitPrice());
             productToUpdate.setUnitsInStock(product.getUnitsInStock());
+            return productToUpdate;
         }
+        return null;
     }
 
     @Override

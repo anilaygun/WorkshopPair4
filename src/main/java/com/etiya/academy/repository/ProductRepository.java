@@ -7,11 +7,11 @@ import java.util.List;
 public interface ProductRepository {
     List<Product> getAll();
 
-    void add(Product product);
+    Product add(Product product);
 
     Product getById(int id);
 
-    void update(Product product);
+    Product update(Product product);
 
     void delete(int id);
 }
