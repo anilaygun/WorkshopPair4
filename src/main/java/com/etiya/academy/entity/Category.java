@@ -6,16 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product implements Entity {
+public class Category implements Entity {
     private int id;
     private String name;
-    private double unitPrice;
-    private int unitsInStock;
 
-    private Category category;
+    private List<Product> products;
 }

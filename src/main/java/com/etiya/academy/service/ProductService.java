@@ -6,7 +6,6 @@ import com.etiya.academy.entity.Product;
 import java.util.List;
 
 public interface ProductService {
-    // TODO: DTO!
     List<ListProductResponseDto> getAll();
 
     CreateProductResponseDto add(CreateProductRequestDto createProductRequest);
@@ -16,5 +15,7 @@ public interface ProductService {
     UpdateProductResponseDto update(UpdateProductRequestDto updateProductRequestDto);
 
     void delete(int id);
+
+    List<GetProductByCategoryIdResponseDto> getAllByCategoryId(int categoryId);
 
 }

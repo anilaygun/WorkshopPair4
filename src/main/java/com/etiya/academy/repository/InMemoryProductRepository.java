@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryProductRepository implements ProductRepository {
@@ -16,9 +17,9 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product add(Product product) {
-        products.add(product);
-        return product;
+    public Product add(Product entity) {
+        products.add(entity);
+        return entity;
     }
 
     @Override
@@ -30,12 +31,12 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public Product update(Product product) {
-        Product productToUpdate = getById(product.getId());
+    public Product update(Product entity) {
+        Product productToUpdate = getById(entity.getId());
         if (productToUpdate != null) {
-            productToUpdate.setName(product.getName());
-            productToUpdate.setUnitPrice(product.getUnitPrice());
-            productToUpdate.setUnitsInStock(product.getUnitsInStock());
+            productToUpdate.setName(entity.getName());
+            productToUpdate.setUnitPrice(entity.getUnitPrice());
+            productToUpdate.setUnitsInStock(entity.getUnitsInStock());
             return productToUpdate;
         }
         return null;
@@ -44,5 +45,12 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public void delete(int id) {
         products.removeIf(p -> p.getId() == id);
+    }
+
+    @Override
+    public List<Product> getAllByCategoryId(int categoryId) {
+        return products.stream()
+                .filter(product -> product.getCategory() != null && product.getCategory().getId() == categoryId)
+                .collect(Collectors.toList());
     }
 }

@@ -4,6 +4,7 @@ package com.etiya.academy.controller;
 import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Product;
 import com.etiya.academy.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ProductsController {
     }
 
     @PostMapping()
-    public ResponseEntity<CreateProductResponseDto> add(@RequestBody CreateProductRequestDto createProductRequest) {
+    public ResponseEntity<CreateProductResponseDto> add(@RequestBody @Valid CreateProductRequestDto createProductRequest) {
         if (createProductRequest != null) {
             CreateProductResponseDto createProductResponseDto = productService.add(createProductRequest);
             return new ResponseEntity<CreateProductResponseDto>(createProductResponseDto, HttpStatus.CREATED);
@@ -35,7 +36,7 @@ public class ProductsController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetProductByIdResponseDto> getById(@PathVariable int id) {
+    public ResponseEntity<GetProductByIdResponseDto> getById(@PathVariable @Valid int id) {
         GetProductByIdResponseDto productByIdResponseDto = productService.getById(id);
 
         if (productByIdResponseDto != null) {
@@ -45,7 +46,7 @@ public class ProductsController {
     }
 
     @PutMapping()
-    public ResponseEntity<UpdateProductResponseDto> update(@RequestBody UpdateProductRequestDto updateProductRequestDto) {
+    public ResponseEntity<UpdateProductResponseDto> update(@RequestBody @Valid UpdateProductRequestDto updateProductRequestDto) {
         UpdateProductResponseDto productResponseDto = productService.update(updateProductRequestDto);
         if (updateProductRequestDto != null) {
             return new ResponseEntity<>(productResponseDto, HttpStatus.CREATED);
@@ -63,6 +64,15 @@ public class ProductsController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<GetProductByCategoryIdResponseDto>> getAllByCategoryId(@PathVariable @Valid int categoryId) {
+        List<GetProductByCategoryIdResponseDto> products = productService.getAllByCategoryId(categoryId);
+        if (products != null && !products.isEmpty()) {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

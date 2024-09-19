@@ -15,6 +15,12 @@ public interface ProductMapper {
 
     GetProductByIdResponseDto getProductResponseDtoFromProduct(Product product);
 
+//    List<GetProductByCategoryIdResponseDto> getProductByCategoryIdResponseDto(List<Product> product);
+GetProductByCategoryIdResponseDto getProductByCategoryIdResponseDtoFromProduct(Product product);
+
+    List<GetProductByCategoryIdResponseDto> getProductByCategoryIdResponseDtos(List<Product> products);
+
+
     List<ListProductResponseDto> listResponseDtoFromProduct(List<Product> productList);
 
     Product productFromCreateRequestDto(CreateProductRequestDto createProductRequestDto);
