@@ -1,4 +1,5 @@
-package com.etiya.academy.dto.product;
+package com.etiya.academy.dto.user;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,10 +13,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListProductResponseDto{
-    private int id;
+public class CreateUserRequestDto {
+
+    @NotNull
+    @NotBlank
     private String name;
-    private double unitPrice;
-    private int unitsInStock;
-    private int categoryId;
+    @NotNull
+    @NotBlank
+    private String surname;
+    @NotNull
+    @NotBlank
+    private String identityNo;
+
 }

@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ListProductResponseDto> getAll() {
-        List<Product> products = productRepository.getAll();
+        List<Product> products = productRepository.findAll();
         List<ListProductResponseDto> listProductResponseDtos = ProductMapper.INSTANCE.listResponseDtoFromProduct(products);
         return listProductResponseDtos;
     }
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public CreateProductResponseDto add(CreateProductRequestDto createProductRequest) {
 
-        boolean productWithSameName = productRepository.getAll()
+        boolean productWithSameName = productRepository.findAll()
                 .stream()
                 .anyMatch(product -> product.getName().equals(createProductRequest.getName()));
 
@@ -45,9 +45,9 @@ public class ProductServiceImpl implements ProductService {
         //
 
         Product product = ProductMapper.INSTANCE.productFromCreateRequestDto(createProductRequest);
-        Random random = new Random();
-        product.setId(random.nextInt(1, 99999));
-        productRepository.add(product);
+      //  Random random = new Random();
+      //  product.setId(random.nextInt(1, 99999));
+        productRepository.save(product);
         CreateProductResponseDto createProductResponseDto = ProductMapper.INSTANCE.createProductResponseDtoFromProduct(product);
         return createProductResponseDto;
     }
@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public GetProductByIdResponseDto getById(int id) {
-        GetProductByIdResponseDto getResponse = ProductMapper.INSTANCE.getProductResponseDtoFromProduct(productRepository.getById(id));
+        GetProductByIdResponseDto getResponse = ProductMapper.INSTANCE.getProductResponseDtoFromProduct(productRepository.getReferenceById(id));
         return getResponse;
     }
 
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException("Güncellenmek istenen ürün bulunamadı.");
         }
         //
-        boolean productWithSameName = productRepository.getAll()
+        boolean productWithSameName = productRepository.findAll()
                 .stream()
                 .anyMatch(p -> p.getName().equals(updateProductRequestDto.getName()));
 
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         //
 
         Product product = ProductMapper.INSTANCE.productFromUpdateRequestDto(updateProductRequestDto);
-        Product updatedProduct = productRepository.update(product);
+        Product updatedProduct = productRepository.save(product);
 
         UpdateProductResponseDto productResponseDto = ProductMapper.INSTANCE.updateResponseDtoFromProduct(updatedProduct);
         return productResponseDto;
@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(int id) {
-        productRepository.delete(id);
+        productRepository.deleteById(id);
     }
 
     @Override

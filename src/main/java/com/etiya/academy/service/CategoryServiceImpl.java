@@ -20,7 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<ListCategoryResponseDto> getAll() {
-        List<Category> categories = categoryRepository.getAll();
+        List<Category> categories = categoryRepository.findAll();
         List<ListCategoryResponseDto> listCategoryResponseDtos = CategoryMapper.INSTANCE.listResponseDtoFromCategory(categories);
         return listCategoryResponseDtos;
     }
@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
         Random random = new Random();
         Category category = CategoryMapper.INSTANCE.categoryFromCreateRequestDto(createCategoryRequestDto);
         category.setId(random.nextInt(1, 99999));
-        categoryRepository.add(category);
+        categoryRepository.save(category);
         CreateCategoryResponseDto createCategoryResponseDto = CategoryMapper.INSTANCE.createCategoryResponseDtoFromCategory(category);
         return createCategoryResponseDto;
     }
@@ -39,14 +39,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public GetCategoryByIdResponseDto getById(int id) {
-        GetCategoryByIdResponseDto getResponse = CategoryMapper.INSTANCE.getCategoryResponseDtoFromCategory(categoryRepository.getById(id));
+        GetCategoryByIdResponseDto getResponse = CategoryMapper.INSTANCE.getCategoryResponseDtoFromCategory(categoryRepository.getReferenceById(id));
         return getResponse;
     }
 
     @Override
     public UpdateCategoryResponseDto update(UpdateCategoryRequestDto updateCategoryRequestDto) {
         Category category = CategoryMapper.INSTANCE.categoryFromUpdateRequestDto(updateCategoryRequestDto);
-        Category updatedCategory = categoryRepository.update(category);
+        Category updatedCategory = categoryRepository.save(category);
 
         UpdateCategoryResponseDto updateCategoryResponseDto = CategoryMapper.INSTANCE.updateResponseDtoFromCategory(updatedCategory);
         return updateCategoryResponseDto;
@@ -56,6 +56,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(int id) {
-        categoryRepository.delete(id);
+        categoryRepository.deleteById(id);
     }
 }

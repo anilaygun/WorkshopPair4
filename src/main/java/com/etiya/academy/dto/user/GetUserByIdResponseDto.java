@@ -1,18 +1,20 @@
-package com.etiya.academy.dto.product;
+package com.etiya.academy.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetProductByCategoryIdResponseDto {
+public class GetUserByIdResponseDto {
     private int id;
     private String name;
-    private double unitPrice;
-    private int unitsInStock;
-    private int categoryId;
+    private String surname;
+    private String identityNo;
+
+
 }

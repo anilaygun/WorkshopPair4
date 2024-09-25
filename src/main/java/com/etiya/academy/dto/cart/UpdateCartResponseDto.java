@@ -1,6 +1,5 @@
-package com.etiya.academy.dto.product;
+package com.etiya.academy.dto.cart;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -8,14 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListProductResponseDto{
+public class UpdateCartResponseDto {
+
     private int id;
-    private String name;
-    private double unitPrice;
-    private int unitsInStock;
-    private int categoryId;
+    private Date createdDate;
+    private int userId;
 }

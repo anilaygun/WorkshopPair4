@@ -66,7 +66,7 @@ public class ProductsController {
 
     }
 
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/productByCategoryId/{categoryId}")
     public ResponseEntity<List<GetProductByCategoryIdResponseDto>> getAllByCategoryId(@PathVariable @Valid int categoryId) {
         List<GetProductByCategoryIdResponseDto> products = productService.getAllByCategoryId(categoryId);
         if (products != null && !products.isEmpty()) {
