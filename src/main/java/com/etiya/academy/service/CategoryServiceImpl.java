@@ -1,5 +1,6 @@
 package com.etiya.academy.service;
 
+import com.etiya.academy.core.rules.CategoryBusinessRules;
 import com.etiya.academy.dto.category.*;
 import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Category;
@@ -17,6 +18,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final CategoryBusinessRules categoryBusinessRules;
 
     @Override
     public List<ListCategoryResponseDto> getAll() {
@@ -27,11 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CreateCategoryResponseDto add(CreateCategoryRequestDto createCategoryRequestDto) {
+        categoryBusinessRules.categoryWithSameNameShouldNotExist(createCategoryRequestDto.getName());
 
-        Random random = new Random();
         Category category = CategoryMapper.INSTANCE.categoryFromCreateRequestDto(createCategoryRequestDto);
-        category.setId(random.nextInt(1, 99999));
         categoryRepository.save(category);
+
         CreateCategoryResponseDto createCategoryResponseDto = CategoryMapper.INSTANCE.createCategoryResponseDtoFromCategory(category);
         return createCategoryResponseDto;
     }

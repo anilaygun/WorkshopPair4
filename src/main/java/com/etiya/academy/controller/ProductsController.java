@@ -25,6 +25,11 @@ public class ProductsController {
         return productService.getAll();
     }
 
+    @GetMapping("{name}")
+    public ResponseEntity<List<ListProductResponseDto>> getByName(@PathVariable String name) {
+        return ResponseEntity.ok(productService.getByName(name));
+    }
+
     @PostMapping()
     public ResponseEntity<CreateProductResponseDto> add(@RequestBody @Valid CreateProductRequestDto createProductRequest) {
         if (createProductRequest != null) {

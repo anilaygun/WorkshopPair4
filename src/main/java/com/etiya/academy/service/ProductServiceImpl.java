@@ -1,6 +1,7 @@
 package com.etiya.academy.service;
 
 import com.etiya.academy.core.exception.type.BusinessException;
+import com.etiya.academy.core.rules.ProductBusinessRules;
 import com.etiya.academy.dto.product.*;
 import com.etiya.academy.entity.Product;
 import com.etiya.academy.mapper.ProductMapper;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final ProductBusinessRules productBusinessRules;
 
     @Override
     public List<ListProductResponseDto> getAll() {
@@ -26,27 +28,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public CreateProductResponseDto add(CreateProductRequestDto createProductRequest) {
-
-        boolean productWithSameName = productRepository.findAll()
-                .stream()
-                .anyMatch(product -> product.getName().equals(createProductRequest.getName()));
-
-        if (productWithSameName)
-            throw new BusinessException("Böyle bir ürün zaten var.");
+        productBusinessRules.productWithSameNameShouldNotExist(createProductRequest.getName());
         //
-        int maxStockLimit = 1000;
-        if (createProductRequest.getUnitsInStock() > maxStockLimit)
-            throw new BusinessException("Stok limiti aşılamaz. Maksimum stok limiti: " + maxStockLimit);
-        //
-        String regex = "^[a-zA-Z0-9]+$";
-        boolean isValidProductName = Pattern.compile(regex).matcher(createProductRequest.getName()).matches();
-        if (!isValidProductName)
-            throw new BusinessException("Ürün isminde özel karakter bulunamaz");
-        //
-
         Product product = ProductMapper.INSTANCE.productFromCreateRequestDto(createProductRequest);
-      //  Random random = new Random();
-      //  product.setId(random.nextInt(1, 99999));
+        //  Random random = new Random();
+        //  product.setId(random.nextInt(1, 99999));
         productRepository.save(product);
         CreateProductResponseDto createProductResponseDto = ProductMapper.INSTANCE.createProductResponseDtoFromProduct(product);
         return createProductResponseDto;
@@ -62,29 +48,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public UpdateProductResponseDto update(UpdateProductRequestDto updateProductRequestDto) {
 
-        Product existingProduct = productRepository.getById(updateProductRequestDto.getId());
-        if (existingProduct == null) {
-            throw new BusinessException("Güncellenmek istenen ürün bulunamadı.");
-        }
-        //
-        boolean productWithSameName = productRepository.findAll()
-                .stream()
-                .anyMatch(p -> p.getName().equals(updateProductRequestDto.getName()));
-
-        if (productWithSameName) {
-            throw new BusinessException("Bu isimde başka bir ürün zaten mevcut.");
-        }
-        //
-        String regex = "^[a-zA-Z0-9]+$";
-        boolean isValidProductName = Pattern.compile(regex).matcher(updateProductRequestDto.getName()).matches();
-        if (!isValidProductName)
-            throw new BusinessException("Ürün isminde özel karakter bulunamaz");
-        //
-
         Product product = ProductMapper.INSTANCE.productFromUpdateRequestDto(updateProductRequestDto);
-        Product updatedProduct = productRepository.save(product);
+        productRepository.save(product);
 
-        UpdateProductResponseDto productResponseDto = ProductMapper.INSTANCE.updateResponseDtoFromProduct(updatedProduct);
+        UpdateProductResponseDto productResponseDto = ProductMapper.INSTANCE.updateResponseDtoFromProduct(product);
         return productResponseDto;
 
 
@@ -93,6 +60,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(int id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ListProductResponseDto> getByName(String name) {
+        List<Product> products = productRepository.findByNameLikeIgnoreCase("%" + name + "%");
+        List<ListProductResponseDto> listProductResponseDto = ProductMapper.INSTANCE.listResponseDtoFromProduct(products);
+        return listProductResponseDto;
+
     }
 
     @Override
