@@ -7,6 +7,8 @@ import com.etiya.academy.entity.Product;
 import com.etiya.academy.mapper.ProductMapper;
 import com.etiya.academy.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductBusinessRules productBusinessRules;
 
     @Override
+    @Cacheable(value = "products")
     public List<ListProductResponseDto> getAll() {
         List<Product> products = productRepository.findAll();
         List<ListProductResponseDto> listProductResponseDtos = ProductMapper.INSTANCE.listResponseDtoFromProduct(products);
@@ -27,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CacheEvict(value = "products", allEntries = true)
     public CreateProductResponseDto add(CreateProductRequestDto createProductRequest) {
         productBusinessRules.productWithSameNameShouldNotExist(createProductRequest.getName());
         //
@@ -40,6 +44,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
+    @Cacheable(value = "product", key = "#id")
     public GetProductByIdResponseDto getById(int id) {
         GetProductByIdResponseDto getResponse = ProductMapper.INSTANCE.getProductResponseDtoFromProduct(productRepository.getReferenceById(id));
         return getResponse;

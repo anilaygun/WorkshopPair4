@@ -10,18 +10,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateProductRequestDto {
+public class CreateProductRequestDto implements Serializable {
 
     @NotNull
     @NotBlank
     private String name;
     @NotNull
     @Positive
-    private double unitPrice;
+    private BigDecimal unitPrice;
     @NotNull
     @PositiveOrZero
     private int unitsInStock;
